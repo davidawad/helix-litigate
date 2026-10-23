@@ -1,0 +1,33 @@
+# litigate in Helix. Append (or merge) this into your Helix
+# languages.toml -- on macOS/Linux that is
+# $XDG_CONFIG_HOME/helix/languages.toml, default ~/.config/helix/languages.toml.
+#
+# Load-bearing fields:
+#   * "rev" under [[grammar]] is pinned on purpose. An unpinned grammar means a
+#     later `hx --grammar fetch` can silently change how your files highlight.
+#   * "language-servers" points at the `litigate lsp --stdio` server below; it
+#     must be on PATH or `hx --health litigate` shows the server as missing
+#     (highlighting, indentation and textobjects do not need it).
+#   * file-types lists both extensions: `.lit` rule modules and `.case`
+#     matters are one language. `roots` makes Helix treat the directory with a
+#     Lit.toml/Lit.lock as the workspace root for the language server.
+
+[[language]]
+name = "litigate"
+scope = "source.litigate"
+injection-regex = "^litigate$"
+file-types = ["lit", "case"]
+roots = ["Lit.toml", "Lit.lock"]
+comment-tokens = ["//", "///"]
+block-comment-tokens = { start = "/*", end = "*/" }
+indent = { tab-width = 2, unit = "  " }
+language-servers = ["litigate-lsp"]
+auto-format = false
+
+[language-server.litigate-lsp]
+command = "litigate"
+args = ["lsp", "--stdio"]
+
+[[grammar]]
+name = "litigate"
+source = { git = "https://github.com/davidawad/tree-sitter-litigate", rev = "ceb16e66552f524fde0c47ef6ffcf86dda2499af" }
